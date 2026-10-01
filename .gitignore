@@ -12,4 +12,5 @@ frontend/dist/
 frontend/.env*
 runs/
 real_assets/tmp_*/
+SIH26228/
 *.log
