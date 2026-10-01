@@ -44,8 +44,8 @@ from visionguard.modules.red_team.benchmark import RedTeamBenchmark
 from visionguard.modules.data_sentinel.parser import DatasetParser, DatasetIntegrityError
 
 app = FastAPI(
-    title="VisionGuard Assurance Engine",
-    description="Fully Offline, Air-Gapped Computer-Vision Assurance Engine",
+    title="VisionGuard Assurance Engine — SIH26228",
+    description="Smart India Hackathon | SIH ID: SIH26228 | VP NEXGEN TEAM ID: 128732 | VisionGuard: Offline Trust Passport for Vision AI",
     version="1.0.0"
 )
 

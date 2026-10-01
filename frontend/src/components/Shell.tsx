@@ -43,8 +43,9 @@ function Boot() {
   const lines = ['Loading assurance console', 'Probing local backend', link === 'probing' ? 'Awaiting response' : link === 'online' ? 'Backend linked' : 'Backend unreachable']
   return (
     <div className="fixed inset-0 z-[60] grid place-items-center bg-ground animate-fade" role="status" aria-live="polite">
-      <div className="w-72">
-        <div className="flex items-center gap-3 text-ink boot"><span className="text-accent"><Mark className="size-8" /></span><div><div className="text-[17px] font-semibold tracking-[-0.01em]">VisionGuard</div><Label className="mt-0.5">Assurance console</Label></div></div>
+      <div className="w-80">
+        <div className="flex items-center gap-3 text-ink boot"><span className="text-accent"><Mark className="size-8" /></span><div><div className="text-[17px] font-semibold tracking-[-0.01em]">VisionGuard</div><Label className="mt-0.5">Assurance console · SIH26228</Label></div></div>
+        <div className="mt-2 font-mono text-[10px] text-faint flex items-center gap-2"><span>VP NEXGEN TEAM ID: 128732</span><span>·</span><span>Offline Trust Passport</span></div>
         <div className="mt-6 space-y-1.5">{lines.map((l, i) => <div key={l} className="boot font-mono text-[11px] text-mute flex items-center gap-2" style={{ animationDelay: `${0.15 + i * 0.18}s` }}><span className="text-faint">{String(i + 1).padStart(2, '0')}</span>{l}</div>)}</div>
         <div className="relative mt-5 h-px bg-line overflow-hidden"><div className="absolute inset-y-0 w-1/3 bg-info animate-scan" /></div>
       </div>
@@ -77,12 +78,33 @@ export default function Shell({ page, go, children }: { page: PageKey; go: (p: P
       {!booted && <Boot />}
       <Toasts />
       <Palette go={go} />
-      <div className={`h-full grid grid-rows-[48px_1fr] transition-[grid-template-columns] duration-300 ${collapsed ? 'grid-cols-[56px_1fr]' : 'grid-cols-[220px_1fr]'}`}>
-        <aside className="row-span-2 border-r border-line bg-panel flex flex-col boot overflow-hidden" style={{ animationDelay: '.05s' }}>
-          <div className="h-12 flex items-center gap-2.5 px-4 border-b border-line text-ink">
-            <span className="text-accent"><Mark /></span>
-            {!collapsed && <div className="whitespace-nowrap"><div className="text-[14px] font-semibold tracking-[-0.01em] leading-none text-grad">VisionGuard</div><div className="font-mono text-[9px] tracking-[0.18em] text-faint mt-1">AI ASSURANCE CONSOLE</div></div>}
+      <div className="h-full flex flex-col overflow-hidden">
+        {/* Top Hackathon & Team Identification Header */}
+        <header className="flex-none h-8 bg-[#0c0d10] border-b border-line px-4 flex items-center justify-between text-[11px] font-mono select-none z-30">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold bg-accent/15 border border-accent/30 text-accent tracking-wider whitespace-nowrap">
+              SIH ID: SIH26228
+            </span>
+            <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium bg-white/[0.06] border border-white/10 text-ink-2 tracking-wider whitespace-nowrap">
+              VP NEXGEN TEAM ID: 128732
+            </span>
+            <span className="hidden sm:inline text-faint">|</span>
+            <span className="hidden sm:inline font-medium text-ink tracking-tight text-[11px] whitespace-nowrap">
+              Smart India Hackathon
+            </span>
           </div>
+          <div className="flex items-center gap-2 text-[11px] font-mono truncate pl-2">
+            <span className="text-accent font-semibold tracking-wide hidden md:inline">VisionGuard:</span>
+            <span className="text-mute truncate">Offline Trust Passport for Vision AI</span>
+          </div>
+        </header>
+
+        <div className={`flex-1 min-h-0 grid grid-rows-[48px_1fr] transition-[grid-template-columns] duration-300 ${collapsed ? 'grid-cols-[56px_1fr]' : 'grid-cols-[220px_1fr]'}`}>
+          <aside className="row-span-2 border-r border-line bg-panel flex flex-col boot overflow-hidden" style={{ animationDelay: '.05s' }}>
+            <div className="h-12 flex items-center gap-2.5 px-4 border-b border-line text-ink">
+              <span className="text-accent"><Mark /></span>
+              {!collapsed && <div className="whitespace-nowrap"><div className="text-[14px] font-semibold tracking-[-0.01em] leading-none text-grad">VisionGuard</div><div className="font-mono text-[9px] tracking-[0.18em] text-faint mt-1">AI ASSURANCE CONSOLE</div></div>}
+            </div>
           <nav aria-label="Primary" className="flex-1 overflow-y-auto py-2">
             {groups.map((g) => (
               <div key={g} className="py-1.5">
@@ -137,6 +159,7 @@ export default function Shell({ page, go, children }: { page: PageKey; go: (p: P
           <div className="relative max-w-[1240px] mx-auto px-8 py-7 max-[1300px]:px-6">{children}</div>
         </main>
       </div>
-    </>
-  )
+    </div>
+  </>
+)
 }
