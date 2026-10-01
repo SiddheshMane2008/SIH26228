@@ -1,0 +1,10 @@
+{
+  "description": "Provides a premium AI assurance console for auditing and verifying computer vision assets with real-time evidence, provenance, and security insights.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}

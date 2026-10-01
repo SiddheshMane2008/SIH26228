@@ -1,0 +1,236 @@
+{
+  "$defs": {
+    "AccessLevelEnum": {
+      "enum": [
+        "WHITE_BOX",
+        "BLACK_BOX",
+        "UNAVAILABLE"
+      ],
+      "title": "AccessLevelEnum",
+      "type": "string"
+    },
+    "DispositionEnum": {
+      "enum": [
+        "ACCEPT",
+        "REVIEW",
+        "QUARANTINE"
+      ],
+      "title": "DispositionEnum",
+      "type": "string"
+    },
+    "Finding": {
+      "description": "Standardized finding schema across all VisionGuard modules.",
+      "properties": {
+        "finding_id": {
+          "description": "Unique deterministic identifier, e.g. FIND-DS-001",
+          "title": "Finding Id",
+          "type": "string"
+        },
+        "module": {
+          "$ref": "#/$defs/ModuleEnum",
+          "description": "Reporting engine module"
+        },
+        "asset": {
+          "description": "Target file, batch, model, or record ID",
+          "title": "Asset",
+          "type": "string"
+        },
+        "reason": {
+          "description": "Human-readable description of detected condition",
+          "title": "Reason",
+          "type": "string"
+        },
+        "evidence": {
+          "additionalProperties": true,
+          "description": "Concrete forensic evidence metrics/hashes",
+          "title": "Evidence",
+          "type": "object"
+        },
+        "severity": {
+          "$ref": "#/$defs/SeverityEnum",
+          "description": "Assessed impact severity"
+        },
+        "confidence": {
+          "description": "Confidence score 0.0 to 1.0",
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Confidence",
+          "type": "number"
+        },
+        "disposition": {
+          "$ref": "#/$defs/DispositionEnum",
+          "description": "Recommended handling disposition"
+        },
+        "recommended_action": {
+          "description": "Actionable remediation guidance",
+          "title": "Recommended Action",
+          "type": "string"
+        },
+        "timestamp": {
+          "description": "ISO 8601 UTC timestamp",
+          "title": "Timestamp",
+          "type": "string"
+        }
+      },
+      "required": [
+        "finding_id",
+        "module",
+        "asset",
+        "reason",
+        "severity",
+        "confidence",
+        "disposition",
+        "recommended_action",
+        "timestamp"
+      ],
+      "title": "Finding",
+      "type": "object"
+    },
+    "ModuleEnum": {
+      "enum": [
+        "DATA_SENTINEL",
+        "MODEL_AUDITOR",
+        "PROVENANCE_ENGINE",
+        "SHIFT_DIAGNOSTICIAN",
+        "BLAST_RADIUS",
+        "RED_TEAM",
+        "GOVERNANCE"
+      ],
+      "title": "ModuleEnum",
+      "type": "string"
+    },
+    "SeverityEnum": {
+      "enum": [
+        "LOW",
+        "MEDIUM",
+        "HIGH",
+        "CRITICAL"
+      ],
+      "title": "SeverityEnum",
+      "type": "string"
+    }
+  },
+  "description": "Audit result for model integrity and fingerprinting.",
+  "properties": {
+    "model_name": {
+      "title": "Model Name",
+      "type": "string"
+    },
+    "model_format": {
+      "title": "Model Format",
+      "type": "string"
+    },
+    "access_level": {
+      "$ref": "#/$defs/AccessLevelEnum"
+    },
+    "weight_digest": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Weight Digest"
+    },
+    "graph_hash": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Graph Hash"
+    },
+    "parameter_stats": {
+      "anyOf": [
+        {
+          "additionalProperties": true,
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Parameter Stats"
+    },
+    "activation_stats": {
+      "anyOf": [
+        {
+          "additionalProperties": true,
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Activation Stats"
+    },
+    "golden_battery_consistency": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Golden Battery Consistency"
+    },
+    "trigger_sweep_sensitivity": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Trigger Sweep Sensitivity"
+    },
+    "findings": {
+      "items": {
+        "$ref": "#/$defs/Finding"
+      },
+      "title": "Findings",
+      "type": "array"
+    },
+    "overall_disposition": {
+      "$ref": "#/$defs/DispositionEnum"
+    },
+    "confidence": {
+      "title": "Confidence",
+      "type": "number"
+    },
+    "evidence_summary": {
+      "additionalProperties": true,
+      "title": "Evidence Summary",
+      "type": "object"
+    },
+    "limitations": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Limitations",
+      "type": "array"
+    }
+  },
+  "required": [
+    "model_name",
+    "model_format",
+    "access_level",
+    "overall_disposition",
+    "confidence"
+  ],
+  "title": "ModelAuditorResult",
+  "type": "object"
+}

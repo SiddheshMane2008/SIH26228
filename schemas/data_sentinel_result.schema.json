@@ -1,0 +1,195 @@
+{
+  "$defs": {
+    "DispositionEnum": {
+      "enum": [
+        "ACCEPT",
+        "REVIEW",
+        "QUARANTINE"
+      ],
+      "title": "DispositionEnum",
+      "type": "string"
+    },
+    "Finding": {
+      "description": "Standardized finding schema across all VisionGuard modules.",
+      "properties": {
+        "finding_id": {
+          "description": "Unique deterministic identifier, e.g. FIND-DS-001",
+          "title": "Finding Id",
+          "type": "string"
+        },
+        "module": {
+          "$ref": "#/$defs/ModuleEnum",
+          "description": "Reporting engine module"
+        },
+        "asset": {
+          "description": "Target file, batch, model, or record ID",
+          "title": "Asset",
+          "type": "string"
+        },
+        "reason": {
+          "description": "Human-readable description of detected condition",
+          "title": "Reason",
+          "type": "string"
+        },
+        "evidence": {
+          "additionalProperties": true,
+          "description": "Concrete forensic evidence metrics/hashes",
+          "title": "Evidence",
+          "type": "object"
+        },
+        "severity": {
+          "$ref": "#/$defs/SeverityEnum",
+          "description": "Assessed impact severity"
+        },
+        "confidence": {
+          "description": "Confidence score 0.0 to 1.0",
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Confidence",
+          "type": "number"
+        },
+        "disposition": {
+          "$ref": "#/$defs/DispositionEnum",
+          "description": "Recommended handling disposition"
+        },
+        "recommended_action": {
+          "description": "Actionable remediation guidance",
+          "title": "Recommended Action",
+          "type": "string"
+        },
+        "timestamp": {
+          "description": "ISO 8601 UTC timestamp",
+          "title": "Timestamp",
+          "type": "string"
+        }
+      },
+      "required": [
+        "finding_id",
+        "module",
+        "asset",
+        "reason",
+        "severity",
+        "confidence",
+        "disposition",
+        "recommended_action",
+        "timestamp"
+      ],
+      "title": "Finding",
+      "type": "object"
+    },
+    "ModuleEnum": {
+      "enum": [
+        "DATA_SENTINEL",
+        "MODEL_AUDITOR",
+        "PROVENANCE_ENGINE",
+        "SHIFT_DIAGNOSTICIAN",
+        "BLAST_RADIUS",
+        "RED_TEAM",
+        "GOVERNANCE"
+      ],
+      "title": "ModuleEnum",
+      "type": "string"
+    },
+    "SeverityEnum": {
+      "enum": [
+        "LOW",
+        "MEDIUM",
+        "HIGH",
+        "CRITICAL"
+      ],
+      "title": "SeverityEnum",
+      "type": "string"
+    }
+  },
+  "description": "Audit result for training-data integrity.",
+  "properties": {
+    "dataset_name": {
+      "title": "Dataset Name",
+      "type": "string"
+    },
+    "format": {
+      "title": "Format",
+      "type": "string"
+    },
+    "total_samples": {
+      "title": "Total Samples",
+      "type": "integer"
+    },
+    "clean_samples": {
+      "title": "Clean Samples",
+      "type": "integer"
+    },
+    "exact_duplicates_count": {
+      "default": 0,
+      "title": "Exact Duplicates Count",
+      "type": "integer"
+    },
+    "near_duplicates_count": {
+      "default": 0,
+      "title": "Near Duplicates Count",
+      "type": "integer"
+    },
+    "label_anomalies_count": {
+      "default": 0,
+      "title": "Label Anomalies Count",
+      "type": "integer"
+    },
+    "ood_samples_count": {
+      "default": 0,
+      "title": "Ood Samples Count",
+      "type": "integer"
+    },
+    "trigger_anomalies_count": {
+      "default": 0,
+      "title": "Trigger Anomalies Count",
+      "type": "integer"
+    },
+    "contributor_risk": {
+      "additionalProperties": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Contributor Risk",
+      "type": "object"
+    },
+    "batch_risk": {
+      "additionalProperties": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Batch Risk",
+      "type": "object"
+    },
+    "findings": {
+      "items": {
+        "$ref": "#/$defs/Finding"
+      },
+      "title": "Findings",
+      "type": "array"
+    },
+    "overall_disposition": {
+      "$ref": "#/$defs/DispositionEnum"
+    },
+    "confidence": {
+      "title": "Confidence",
+      "type": "number"
+    },
+    "limitations": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Limitations",
+      "type": "array"
+    }
+  },
+  "required": [
+    "dataset_name",
+    "format",
+    "total_samples",
+    "clean_samples",
+    "overall_disposition",
+    "confidence"
+  ],
+  "title": "DataSentinelResult",
+  "type": "object"
+}

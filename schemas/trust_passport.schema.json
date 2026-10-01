@@ -1,0 +1,227 @@
+{
+  "$defs": {
+    "DispositionEnum": {
+      "enum": [
+        "ACCEPT",
+        "REVIEW",
+        "QUARANTINE"
+      ],
+      "title": "DispositionEnum",
+      "type": "string"
+    },
+    "Finding": {
+      "description": "Standardized finding schema across all VisionGuard modules.",
+      "properties": {
+        "finding_id": {
+          "description": "Unique deterministic identifier, e.g. FIND-DS-001",
+          "title": "Finding Id",
+          "type": "string"
+        },
+        "module": {
+          "$ref": "#/$defs/ModuleEnum",
+          "description": "Reporting engine module"
+        },
+        "asset": {
+          "description": "Target file, batch, model, or record ID",
+          "title": "Asset",
+          "type": "string"
+        },
+        "reason": {
+          "description": "Human-readable description of detected condition",
+          "title": "Reason",
+          "type": "string"
+        },
+        "evidence": {
+          "additionalProperties": true,
+          "description": "Concrete forensic evidence metrics/hashes",
+          "title": "Evidence",
+          "type": "object"
+        },
+        "severity": {
+          "$ref": "#/$defs/SeverityEnum",
+          "description": "Assessed impact severity"
+        },
+        "confidence": {
+          "description": "Confidence score 0.0 to 1.0",
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Confidence",
+          "type": "number"
+        },
+        "disposition": {
+          "$ref": "#/$defs/DispositionEnum",
+          "description": "Recommended handling disposition"
+        },
+        "recommended_action": {
+          "description": "Actionable remediation guidance",
+          "title": "Recommended Action",
+          "type": "string"
+        },
+        "timestamp": {
+          "description": "ISO 8601 UTC timestamp",
+          "title": "Timestamp",
+          "type": "string"
+        }
+      },
+      "required": [
+        "finding_id",
+        "module",
+        "asset",
+        "reason",
+        "severity",
+        "confidence",
+        "disposition",
+        "recommended_action",
+        "timestamp"
+      ],
+      "title": "Finding",
+      "type": "object"
+    },
+    "ModuleEnum": {
+      "enum": [
+        "DATA_SENTINEL",
+        "MODEL_AUDITOR",
+        "PROVENANCE_ENGINE",
+        "SHIFT_DIAGNOSTICIAN",
+        "BLAST_RADIUS",
+        "RED_TEAM",
+        "GOVERNANCE"
+      ],
+      "title": "ModuleEnum",
+      "type": "string"
+    },
+    "SeverityEnum": {
+      "enum": [
+        "LOW",
+        "MEDIUM",
+        "HIGH",
+        "CRITICAL"
+      ],
+      "title": "SeverityEnum",
+      "type": "string"
+    }
+  },
+  "description": "The Single Signed Assurance Artifact of VisionGuard.\nConsolidates data, model, provenance, shift, blast-radius, and red-team findings.",
+  "properties": {
+    "passport_id": {
+      "title": "Passport Id",
+      "type": "string"
+    },
+    "generated_at": {
+      "title": "Generated At",
+      "type": "string"
+    },
+    "engine_version": {
+      "default": "1.0.0",
+      "title": "Engine Version",
+      "type": "string"
+    },
+    "operating_mode": {
+      "default": "OFFLINE_AIR_GAPPED",
+      "title": "Operating Mode",
+      "type": "string"
+    },
+    "audited_assets": {
+      "additionalProperties": true,
+      "title": "Audited Assets",
+      "type": "object"
+    },
+    "overall_disposition": {
+      "$ref": "#/$defs/DispositionEnum"
+    },
+    "overall_confidence": {
+      "title": "Overall Confidence",
+      "type": "number"
+    },
+    "executive_summary": {
+      "title": "Executive Summary",
+      "type": "string"
+    },
+    "module_dispositions": {
+      "additionalProperties": {
+        "$ref": "#/$defs/DispositionEnum"
+      },
+      "title": "Module Dispositions",
+      "type": "object"
+    },
+    "findings_summary": {
+      "additionalProperties": {
+        "type": "integer"
+      },
+      "title": "Findings Summary",
+      "type": "object"
+    },
+    "top_findings": {
+      "items": {
+        "$ref": "#/$defs/Finding"
+      },
+      "title": "Top Findings",
+      "type": "array"
+    },
+    "blast_radius_summary": {
+      "anyOf": [
+        {
+          "additionalProperties": true,
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Blast Radius Summary"
+    },
+    "coverage_statement": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Coverage Statement",
+      "type": "array"
+    },
+    "explicit_limitations": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Explicit Limitations",
+      "type": "array"
+    },
+    "remediation_recommendations": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Remediation Recommendations",
+      "type": "array"
+    },
+    "signer_public_key_hex": {
+      "title": "Signer Public Key Hex",
+      "type": "string"
+    },
+    "passport_digest": {
+      "title": "Passport Digest",
+      "type": "string"
+    },
+    "signature_hex": {
+      "title": "Signature Hex",
+      "type": "string"
+    }
+  },
+  "required": [
+    "passport_id",
+    "generated_at",
+    "audited_assets",
+    "overall_disposition",
+    "overall_confidence",
+    "executive_summary",
+    "module_dispositions",
+    "findings_summary",
+    "top_findings",
+    "coverage_statement",
+    "explicit_limitations",
+    "remediation_recommendations",
+    "signer_public_key_hex",
+    "passport_digest",
+    "signature_hex"
+  ],
+  "title": "TrustPassport",
+  "type": "object"
+}

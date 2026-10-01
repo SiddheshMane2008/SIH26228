@@ -1,0 +1,190 @@
+{
+  "$defs": {
+    "DispositionEnum": {
+      "enum": [
+        "ACCEPT",
+        "REVIEW",
+        "QUARANTINE"
+      ],
+      "title": "DispositionEnum",
+      "type": "string"
+    },
+    "Finding": {
+      "description": "Standardized finding schema across all VisionGuard modules.",
+      "properties": {
+        "finding_id": {
+          "description": "Unique deterministic identifier, e.g. FIND-DS-001",
+          "title": "Finding Id",
+          "type": "string"
+        },
+        "module": {
+          "$ref": "#/$defs/ModuleEnum",
+          "description": "Reporting engine module"
+        },
+        "asset": {
+          "description": "Target file, batch, model, or record ID",
+          "title": "Asset",
+          "type": "string"
+        },
+        "reason": {
+          "description": "Human-readable description of detected condition",
+          "title": "Reason",
+          "type": "string"
+        },
+        "evidence": {
+          "additionalProperties": true,
+          "description": "Concrete forensic evidence metrics/hashes",
+          "title": "Evidence",
+          "type": "object"
+        },
+        "severity": {
+          "$ref": "#/$defs/SeverityEnum",
+          "description": "Assessed impact severity"
+        },
+        "confidence": {
+          "description": "Confidence score 0.0 to 1.0",
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Confidence",
+          "type": "number"
+        },
+        "disposition": {
+          "$ref": "#/$defs/DispositionEnum",
+          "description": "Recommended handling disposition"
+        },
+        "recommended_action": {
+          "description": "Actionable remediation guidance",
+          "title": "Recommended Action",
+          "type": "string"
+        },
+        "timestamp": {
+          "description": "ISO 8601 UTC timestamp",
+          "title": "Timestamp",
+          "type": "string"
+        }
+      },
+      "required": [
+        "finding_id",
+        "module",
+        "asset",
+        "reason",
+        "severity",
+        "confidence",
+        "disposition",
+        "recommended_action",
+        "timestamp"
+      ],
+      "title": "Finding",
+      "type": "object"
+    },
+    "ModuleEnum": {
+      "enum": [
+        "DATA_SENTINEL",
+        "MODEL_AUDITOR",
+        "PROVENANCE_ENGINE",
+        "SHIFT_DIAGNOSTICIAN",
+        "BLAST_RADIUS",
+        "RED_TEAM",
+        "GOVERNANCE"
+      ],
+      "title": "ModuleEnum",
+      "type": "string"
+    },
+    "SeverityEnum": {
+      "enum": [
+        "LOW",
+        "MEDIUM",
+        "HIGH",
+        "CRITICAL"
+      ],
+      "title": "SeverityEnum",
+      "type": "string"
+    }
+  },
+  "description": "Forensic verification result of the inference chain.",
+  "properties": {
+    "chain_id": {
+      "title": "Chain Id",
+      "type": "string"
+    },
+    "total_records": {
+      "title": "Total Records",
+      "type": "integer"
+    },
+    "chain_valid": {
+      "title": "Chain Valid",
+      "type": "boolean"
+    },
+    "tampered_records": {
+      "items": {
+        "type": "integer"
+      },
+      "title": "Tampered Records",
+      "type": "array"
+    },
+    "replay_records": {
+      "items": {
+        "type": "integer"
+      },
+      "title": "Replay Records",
+      "type": "array"
+    },
+    "broken_links": {
+      "items": {
+        "type": "integer"
+      },
+      "title": "Broken Links",
+      "type": "array"
+    },
+    "spot_check_passed": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Spot Check Passed"
+    },
+    "spot_check_discrepancies": {
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Spot Check Discrepancies",
+      "type": "array"
+    },
+    "findings": {
+      "items": {
+        "$ref": "#/$defs/Finding"
+      },
+      "title": "Findings",
+      "type": "array"
+    },
+    "overall_disposition": {
+      "$ref": "#/$defs/DispositionEnum"
+    },
+    "confidence": {
+      "title": "Confidence",
+      "type": "number"
+    },
+    "limitations": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Limitations",
+      "type": "array"
+    }
+  },
+  "required": [
+    "chain_id",
+    "total_records",
+    "chain_valid",
+    "overall_disposition",
+    "confidence"
+  ],
+  "title": "ProvenanceAuditResult",
+  "type": "object"
+}

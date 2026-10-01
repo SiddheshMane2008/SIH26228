@@ -1,0 +1,151 @@
+@import url('https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,400;6..72,500&family=JetBrains+Mono:wght@400;500&display=swap');
+@import 'tailwindcss';
+
+@theme {
+  --font-sans: 'Archivo', ui-sans-serif, system-ui, sans-serif;
+  --font-serif: 'Newsreader', ui-serif, Georgia, serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  --color-ground: #0a0b0d;
+  --color-panel: #101215;
+  --color-raised: #15181c;
+  --color-line: rgb(255 255 255 / 0.07);
+  --color-line-strong: rgb(255 255 255 / 0.13);
+  --color-ink: #e8e6e1;
+  --color-ink-2: #b4b3ae;
+  --color-mute: #858a92;
+  --color-faint: #5a5f67;
+
+  --color-ok: #62b58f;
+  --color-warn: #d8a547;
+  --color-crit: #e05a50;
+  --color-info: #86a9c8;
+  --color-na: #6b7078;
+  --color-accent: #86a9c8;
+  --color-accent-2: #9d8fd6;
+
+  --animate-breathe: breathe 3.2s ease-in-out infinite;
+  --animate-rise: rise 0.42s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  --animate-fade: fade 0.3s ease-out both;
+  --animate-scan: scan 1.6s linear infinite;
+}
+
+@keyframes breathe { 0%,100% { opacity: 1 } 50% { opacity: .35 } }
+@keyframes rise { from { opacity: 0; transform: translateY(6px) } to { opacity: 1; transform: none } }
+@keyframes fade { from { opacity: 0 } to { opacity: 1 } }
+@keyframes scan { from { transform: translateX(-100%) } to { transform: translateX(250%) } }
+@keyframes dash { to { stroke-dashoffset: 0 } }
+
+@layer base {
+  html, body, #root { height: 100%; }
+  body {
+    background: var(--color-ground);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    font-feature-settings: 'ss01', 'tnum';
+  }
+  ::selection { background: rgb(134 169 200 / 0.35); }
+  :focus-visible { outline: 1.5px solid var(--color-info); outline-offset: 2px; border-radius: 3px; }
+  * { scrollbar-width: thin; scrollbar-color: transparent transparent; }
+  *:hover { scrollbar-color: rgb(255 255 255 / 0.12) transparent; }
+}
+
+.hatch {
+  background-image: repeating-linear-gradient(135deg, rgb(255 255 255 / 0.035) 0 1px, transparent 1px 7px);
+}
+.grain {
+  background-image: radial-gradient(rgb(255 255 255 / 0.035) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+.draw { stroke-dasharray: 1; stroke-dashoffset: 1; animation: dash .9s cubic-bezier(.3,.7,.2,1) forwards; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
+}
+
+@keyframes stamp { 0% { opacity: 0; transform: scale(1.35) rotate(-3deg); filter: blur(4px) } 60% { opacity: 1; transform: scale(.98) rotate(0); filter: none } 100% { transform: none } }
+@keyframes spin { to { transform: rotate(360deg) } }
+@keyframes sweep { from { transform: translateX(-100%) } to { transform: translateX(100%) } }
+@keyframes glow { 0%,100% { box-shadow: 0 0 0 0 rgb(134 169 200 / 0) } 50% { box-shadow: 0 0 0 4px rgb(134 169 200 / .12) } }
+
+.stamp { transform-origin: left center; animation: stamp .7s cubic-bezier(.2,.8,.2,1) both; }
+.spin-slow { animation: spin 40s linear infinite; transform-origin: center; }
+.glow { animation: glow 2.4s ease-in-out infinite; }
+.stagger > * { animation: rise .45s cubic-bezier(.2,.7,.2,1) both; }
+.stagger > *:nth-child(2) { animation-delay: .04s } .stagger > *:nth-child(3) { animation-delay: .08s }
+.stagger > *:nth-child(4) { animation-delay: .12s } .stagger > *:nth-child(5) { animation-delay: .16s }
+.stagger > *:nth-child(6) { animation-delay: .2s } .stagger > *:nth-child(n+7) { animation-delay: .24s }
+
+.vignette { background: radial-gradient(1200px 420px at 50% -120px, rgb(134 169 200 / .07), transparent 70%); }
+.sheen { position: relative; overflow: hidden; }
+.sheen::after { content: ''; position: absolute; inset: 0; background: linear-gradient(100deg, transparent 30%, rgb(255 255 255 / .04) 50%, transparent 70%); transform: translateX(-100%); transition: transform .9s ease; pointer-events: none; }
+.sheen:hover::after { transform: translateX(100%); }
+.lift { transition: transform .25s ease, border-color .25s ease, background-color .25s ease; }
+.lift:hover { transform: translateY(-1px); border-color: var(--color-line-strong); }
+@keyframes drawer { from { transform: translateX(24px); opacity: 0 } to { transform: none; opacity: 1 } }
+@keyframes boot { from { opacity: 0; transform: translateY(4px) } to { opacity: 1; transform: none } }
+@keyframes grow { from { transform: scaleY(0) } to { transform: scaleY(1) } }
+@keyframes flow { to { stroke-dashoffset: -16 } }
+.drawer-in { animation: drawer .32s cubic-bezier(.2,.7,.2,1) both; }
+.boot { animation: boot .6s cubic-bezier(.2,.7,.2,1) both; }
+.grow { transform-origin: bottom; animation: grow .7s cubic-bezier(.2,.7,.2,1) both; }
+.flow { stroke-dasharray: 3 5; animation: flow 1.2s linear infinite; }
+button:active:not(:disabled) { transform: translateY(0.5px); }
+
+/* ── Themes: change ground + accent only. Semantic ok/warn/crit never change meaning. ── */
+:root { --aurora-a: rgb(134 169 200 / .10); --aurora-b: rgb(157 143 214 / .07); }
+[data-theme='midnight'] {
+  --color-ground: #070a12; --color-panel: #0c1120; --color-raised: #121a2c;
+  --color-accent: #7fa8ff; --color-accent-2: #5ee0d0; --color-info: #7fa8ff;
+  --aurora-a: rgb(127 168 255 / .13); --aurora-b: rgb(94 224 208 / .07);
+}
+[data-theme='phosphor'] {
+  --color-ground: #070b09; --color-panel: #0c120f; --color-raised: #121a16;
+  --color-accent: #7bd8a8; --color-accent-2: #c6e36b; --color-info: #86c9b0;
+  --aurora-a: rgb(123 216 168 / .10); --aurora-b: rgb(198 227 107 / .05);
+}
+[data-theme='ember'] {
+  --color-ground: #0d0a08; --color-panel: #14100d; --color-raised: #1b1612;
+  --color-accent: #e8a36b; --color-accent-2: #d86b8c; --color-ink: #efe6dc; --color-info: #c9a98a;
+  --aurora-a: rgb(232 163 107 / .10); --aurora-b: rgb(216 107 140 / .06);
+}
+[data-theme='ultraviolet'] {
+  --color-ground: #0a0810; --color-panel: #110e1a; --color-raised: #181424;
+  --color-accent: #b39cff; --color-accent-2: #ff8fc7; --color-info: #a8a0e0;
+  --aurora-a: rgb(179 156 255 / .13); --aurora-b: rgb(255 143 199 / .07);
+}
+body, .bg-panel, .bg-ground, .bg-raised { transition: background-color .6s ease, color .6s ease; }
+
+@property --vg-angle { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
+@keyframes vg-rotate { to { --vg-angle: 360deg } }
+@keyframes vg-drift { 0% { background-position: 0% 0%, 100% 0% } 50% { background-position: 60% 30%, 30% 60% } 100% { background-position: 0% 0%, 100% 0% } }
+@keyframes vg-shimmer { to { background-position: 200% center } }
+
+/* Slow atmospheric field behind content. */
+.aurora {
+  background:
+    radial-gradient(60% 55% at 20% 0%, var(--aurora-a), transparent 70%),
+    radial-gradient(50% 50% at 85% 10%, var(--aurora-b), transparent 70%);
+  background-size: 160% 160%, 160% 160%;
+  animation: vg-drift 28s ease-in-out infinite;
+}
+/* Rotating gradient hairline. --edge is set per state. */
+.edge { position: relative; isolation: isolate; }
+.edge::before {
+  content: ''; position: absolute; inset: -1px; border-radius: inherit; padding: 1px; z-index: -1; pointer-events: none;
+  background: conic-gradient(from var(--vg-angle), transparent 0 60%, var(--edge, var(--color-accent)) 75%, var(--color-accent-2) 82%, transparent 92%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude;
+  animation: vg-rotate 9s linear infinite; opacity: .9;
+}
+.text-grad {
+  background: linear-gradient(90deg, var(--color-ink) 0%, var(--color-accent) 30%, var(--color-accent-2) 50%, var(--color-accent) 70%, var(--color-ink) 100%);
+  background-size: 200% auto; -webkit-background-clip: text; background-clip: text; color: transparent;
+  animation: vg-shimmer 8s linear infinite;
+}
+.bar-grad { background: linear-gradient(90deg, var(--color-accent), var(--color-accent-2), var(--color-accent)); background-size: 200% 100%; animation: vg-shimmer 4s linear infinite; }
+[data-ambient='off'] .aurora, [data-ambient='off'] .edge::before, [data-ambient='off'] .text-grad, [data-ambient='off'] .bar-grad { animation: none; }
+[data-ambient='off'] .edge::before { opacity: .45; }
+@keyframes toastbar { from { transform: scaleX(1) } to { transform: scaleX(0) } }
+@keyframes growx { from { transform: scaleX(0) } to { transform: scaleX(1) } }
+.grow-x { transform-origin: left; animation: growx .8s cubic-bezier(.2,.7,.2,1) both; }
