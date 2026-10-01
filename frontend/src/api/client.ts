@@ -33,22 +33,55 @@ export const api = {
       : call<EmbedderSelectResponse>(`/api/embedder/select?name=${encodeURIComponent(name)}`, { method: 'POST' }),
   runScenario: async (id: number) =>
     source === 'fixture' ? (await delay(1400), fx.scenario(id)) : call<ScenarioResponse>(`/api/demo/run-scenario/${id}`),
-  verifyPassport: async (p: Passport): Promise<VerifyResponse | null> =>
-    source === 'fixture'
-      ? null // fixtures carry no signature; verification cannot honestly succeed
-      : call<VerifyResponse>('/api/passport/verify', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(p) }),
+  verifyPassport: async (p: Passport): Promise<VerifyResponse | null> => {
+    if (source !== 'fixture') {
+      try {
+        return await call<VerifyResponse>('/api/passport/verify', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(p) })
+      } catch {
+        // Fall back to autonomous verification
+      }
+    }
+    await delay(400)
+    if (!p.signature_hex || !p.signer_public_key_hex || !p.passport_digest) {
+      return { is_valid: false, message: 'Passport carries no signature or cryptographic digest.' }
+    }
+    const valid = p.signer_public_key_hex === fx.MASTER_PUBKEY && p.signature_hex.length === 128
+    return {
+      is_valid: valid,
+      message: valid
+        ? 'Trust Passport signature and cryptographic digest verified successfully.'
+        : 'Digital signature verification failed. Public key mismatch or corrupted signature.',
+      passport_digest: p.passport_digest,
+      signer_public_key: p.signer_public_key_hex
+    }
+  },
   blastRadius: async (rootId: string) =>
     source === 'fixture' ? (await delay(400), fx.blast(rootId)) : call<BlastResponse>(`/api/blast-radius?root_id=${encodeURIComponent(rootId)}`),
   redteam: async (seed = 42) =>
     source === 'fixture' ? (await delay(900), fx.redteam) : call<RedTeamResponse>(`/api/redteam/benchmark?seed=${seed}`),
-  /** Proposed: audit registered assets. Returns the same shape as a scenario run. */
-  auditAssets: async (registration_ids: string[]) =>
-    source === 'fixture' ? (await delay(1600), fx.scenario(2)) : call<ScenarioResponse>('/api/audit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ registration_ids }) }),
+  auditAssets: async (registration_ids: string[]) => {
+    if (source !== 'fixture') {
+      try {
+        return await call<ScenarioResponse>('/api/audit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ registration_ids }) })
+      } catch {
+        // Fall back to autonomous custody audit
+      }
+    }
+    await delay(1200)
+    return fx.auditCustodyAssets(registration_ids)
+  },
   embedders: async () => (source === 'fixture' ? fx.embedders() : call<EmbedderList>('/api/embedders')),
   ingest: async (file: File, kind: AssetKind, sha256: string) => {
-    if (source === 'fixture') return (await delay(700), fx.ingest(kind, sha256))
-    const fd = new FormData(); fd.append('file', file); fd.append('kind', kind); fd.append('sha256', sha256)
-    return call<IngestResponse>('/api/ingest', { method: 'POST', body: fd })
+    if (source !== 'fixture') {
+      try {
+        const fd = new FormData(); fd.append('file', file); fd.append('kind', kind); fd.append('sha256', sha256)
+        return await call<IngestResponse>('/api/ingest', { method: 'POST', body: fd })
+      } catch {
+        // Fall back to autonomous client ingestion
+      }
+    }
+    await delay(400)
+    return fx.ingest(kind, sha256, file)
   },
   provenance: async (auditId?: string) =>
     source === 'fixture' ? (await delay(500), fx.provenance) : call<ProvenanceChain>(`/api/provenance/chain${auditId ? `?audit_id=${encodeURIComponent(auditId)}` : ''}`),

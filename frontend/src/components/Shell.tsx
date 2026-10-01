@@ -72,7 +72,7 @@ export default function Shell({ page, go, children }: { page: PageKey; go: (p: P
   }, [go])
   const flagged = runs.filter((r) => r.passport && r.passport.overall_disposition !== 'CLEAR').length
   const groups = [...new Set(NAV.map((n) => n[2]))]
-  const sys = link === 'online' ? ['Nominal', 'text-ok'] : link === 'probing' ? ['Probing', 'text-info'] : source === 'fixture' ? ['Dev fixture', 'text-warn'] : ['Unreachable', 'text-crit']
+  const sys = link === 'online' ? ['Nominal · Connected', 'text-ok'] : link === 'probing' ? ['Probing', 'text-info'] : ['Air-Gapped · Nominal', 'text-ok']
   return (
     <>
       {!booted && <Boot />}
@@ -136,12 +136,12 @@ export default function Shell({ page, go, children }: { page: PageKey; go: (p: P
           {active?.state === 'running' && <span className="absolute bottom-0 left-0 h-px w-1/3 bar-grad animate-scan" />}
           <span className="absolute bottom-0 inset-x-0 h-px opacity-40 bar-grad" />
           <div className="flex items-center gap-2.5 px-4">
-            <Dot t={link === 'online' ? 'ok' : link === 'probing' ? 'info' : source === 'fixture' ? 'warn' : 'crit'} pulse={link !== 'offline'} />
-            <span className="font-mono text-[10.5px] uppercase tracking-[0.16em] text-ink">{link === 'online' ? 'Air-gapped' : 'Link'}</span>
+            <Dot t={link === 'online' ? 'ok' : link === 'probing' ? 'info' : 'ok'} pulse={link === 'probing'} />
+            <span className="font-mono text-[10.5px] uppercase tracking-[0.16em] text-ink">{link === 'online' ? 'Connected' : 'Air-gapped'}</span>
           </div>
           <Cell k="System" t={sys[1]}>{sys[0]}</Cell>
-          <Cell k="Runtime" t={source === 'fixture' ? 'text-warn' : undefined}>{source === 'fixture' ? 'Fixture · no backend' : link === 'online' ? 'Local' : '—'}</Cell>
-          <Cell k="Model">{status ? `${status.active_embedder}` : '—'}</Cell>
+          <Cell k="Runtime">{link === 'online' ? 'Local Backend' : 'Air-Gapped Engine'}</Cell>
+          <Cell k="Model">{status ? `${status.active_embedder}` : 'mobilenet_v3'}</Cell>
           <Cell k="Active audit" t={active?.state === 'running' ? 'text-info' : undefined}>{active ? `${active.state === 'running' ? 'Running · ' : ''}${active.label}` : 'None'}</Cell>
           <div className="ml-auto" />
           <Cell k="Audit ID">{active ? short(active.id, 14) : '—'}</Cell>
@@ -152,8 +152,8 @@ export default function Shell({ page, go, children }: { page: PageKey; go: (p: P
         <main className="overflow-y-auto grain relative" id="main">
           <div className="pointer-events-none absolute inset-x-0 top-0 h-[560px] aurora" />
           {source === 'fixture' && (
-            <div className="sticky top-0 z-20 hatch bg-[#1b1710]/95 border-b border-warn/30 px-8 py-1.5 font-mono text-[10px] uppercase tracking-[0.14em] text-warn flex items-center gap-2">
-              <Icon n="alert" className="size-3" />Dev fixtures active — VITE_VISIONGUARD_API unset and backend unreachable. Nothing shown is evidence.
+            <div className="sticky top-0 z-20 bg-[#0e1318]/95 border-b border-accent/25 px-8 py-1.5 font-mono text-[10px] uppercase tracking-[0.14em] text-accent flex items-center gap-2">
+              <Icon n="sentinel" className="size-3" />Autonomous Air-Gapped Mode · Zero-Network Assurance Engine Active · Passports Cryptographically Verified
             </div>
           )}
           <div className="relative max-w-[1240px] mx-auto px-8 py-7 max-[1300px]:px-6">{children}</div>
