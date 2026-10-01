@@ -14,3 +14,4 @@ runs/
 real_assets/tmp_*/
 SIH26228/
 *.log
+.vercel
